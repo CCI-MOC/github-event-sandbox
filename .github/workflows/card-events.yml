@@ -1,0 +1,33 @@
+---
+name: "Card events"
+on:
+  project_card:
+    types:
+      - created
+
+jobs:
+  ensure_card_on_backlog:
+    name: "Ensure card is on mocbacklog"
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: "Checkout repository"
+        uses: actions/checkout@v2
+
+      - name: "Set up python"
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: "Install dependencies"
+        run: |
+          python -m pip install --upgrade pip
+          pip install pipenv
+
+      - name: "Dump github context"
+        run: |
+          cat <<EOF
+          ${{ toJson(github) }}
+          EOF
+        env:
+          GH_API_TOKEN: ${{ secrets.GH_API_TOKEN }}
